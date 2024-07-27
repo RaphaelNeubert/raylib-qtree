@@ -1,3 +1,4 @@
 *.o 
 main
 libraylib.a
+raylib.h
