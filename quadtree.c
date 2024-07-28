@@ -16,7 +16,7 @@ void qtree_init(struct QTree *qtree, int x_from, int x_to, int y_from, int y_to,
     qtree->root_tile.has_children = false;
     qtree->root_tile.draw = false;
     qtree->root_tile.parent = NULL;
-    qtree->tile_count = 0;
+    qtree->tile_count = 1;
     qtree->x_tile_size = min_x_tile_size;
     qtree->y_tile_size = min_y_tile_size;
 }
@@ -106,7 +106,6 @@ int merge_children(struct Tile *parent_tile)
         merge_count += merge_children(parent_tile->parent);
     return merge_count;
 }
-long int tmp =0;
 
 int qtree_add(struct QTree *qtree, int xpos, int ypos)
 {
@@ -125,7 +124,26 @@ int qtree_add(struct QTree *qtree, int xpos, int ypos)
     }
     smallest_tile->draw = true;
     merged = merge_children(smallest_tile->parent);
-    tmp += merged;
     qtree->tile_count -= merged;
     return 0;
+}
+
+int qtree_get_size(struct QTree *qtree)
+{
+    return sizeof(*qtree) + (qtree->tile_count-1) * sizeof(qtree->root_tile);
+}
+
+void free_tile(struct Tile *tile)
+{
+    if (tile->has_children) {
+        for (int i=0; i<4; i++)
+            free_tile(tile->child[i]);
+    }
+    free(tile);
+}
+
+void qtree_delete(struct QTree *qtree)
+{
+    for (int i=0; i<4; i++)
+        free_tile(qtree->root_tile.child[i]);
 }

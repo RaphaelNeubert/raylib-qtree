@@ -40,14 +40,15 @@ int main(void)
     qtree_init(&qtree, 200, 1400, 50, 800, 40, 40);
     //qtree_init(&qtree, 200, 800, 50, 650, 40, 40);
 
-    for (int i=0; i<150; i++) {
-        for (int j=0; j<80; j++) {
+    for (int i=0; i<600; i++) {
+        for (int j=0; j<360; j++) {
         //qtree_add(&qtree, 1200+i, 700-i);
         qtree_add(&qtree, 200+i, 50+j);
         //qtree_add(&qtree, 100+i, 100+j);
         }
     }
     printf("tile count: %d\n", qtree.tile_count);
+    printf("qtree size: %d Byte\n", qtree_get_size(&qtree));
 
     while (!WindowShouldClose())
     {
@@ -61,6 +62,7 @@ int main(void)
     }
 
     CloseWindow();
+    qtree_delete(&qtree);
 
     return 0;
 }

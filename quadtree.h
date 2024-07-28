@@ -24,5 +24,7 @@ struct QTree {
 void qtree_init(struct QTree *qtree, int x_from, int x_to, int y_from, int y_to,
                 int min_x_tile_size, int min_y_tile_size);
 int qtree_add(struct QTree *qtree, int xpos, int ypos);
+int qtree_get_size(struct QTree *qtree);
+void qtree_delete(struct QTree *qtree);
 
 #endif 
