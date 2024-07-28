@@ -3,7 +3,7 @@ CFLAGS=-Wall -Wextra -std=c99 -pedantic -I. -g
 LDFLAGS=-lGL -lm -lpthread -ldl -lrt -lX11
 
 TARGET=main
-SOURCES=main.c quadtree.c
+SOURCES=main.c quadtree.c render.c
 OBJECTS=$(SOURCES:.c=.o)
 
 .PHONY: all clean
