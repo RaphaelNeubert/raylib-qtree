@@ -7,7 +7,7 @@
 
 
 void qtree_init(struct QTree *qtree, int x_from, int x_to, int y_from, int y_to,
-                int min_x_tile_size, int min_y_tile_size)
+                int min_tile_size)
 {
     qtree->root_tile.x_from = x_from;
     qtree->root_tile.x_to = x_to;
@@ -17,8 +17,7 @@ void qtree_init(struct QTree *qtree, int x_from, int x_to, int y_from, int y_to,
     qtree->root_tile.draw = false;
     qtree->root_tile.parent = NULL;
     qtree->tile_count = 1;
-    qtree->x_tile_size = min_x_tile_size;
-    qtree->y_tile_size = min_y_tile_size;
+    qtree->tile_size = min_tile_size;
 }
 
 struct Tile* find_smallest_tile(struct Tile *tile, int xpos, int ypos)
@@ -35,7 +34,7 @@ struct Tile* find_smallest_tile(struct Tile *tile, int xpos, int ypos)
     perror("error: smallest tile was not found");
     return NULL;
 }
-int subdivide_tile(struct Tile *tile, int tile_size_x , int tile_size_y)
+int subdivide_tile(struct Tile *tile)
 {
     int width = tile->x_to - tile->x_from + 1;
     int height = tile->y_to - tile->y_from + 1;
@@ -114,10 +113,10 @@ int qtree_add(struct QTree *qtree, int xpos, int ypos)
     if (smallest_tile->draw)
         return 0;
 
-    while ((smallest_tile->x_to - smallest_tile->x_from + 1) > qtree->x_tile_size && 
-           (smallest_tile->y_to - smallest_tile->y_from + 1) > qtree->y_tile_size) {
+    while ((smallest_tile->x_to - smallest_tile->x_from + 1) > qtree->tile_size && 
+           (smallest_tile->y_to - smallest_tile->y_from + 1) > qtree->tile_size) {
         
-        if ((ret = subdivide_tile(smallest_tile, qtree->x_tile_size, qtree->y_tile_size) != 0))
+        if ((ret = subdivide_tile(smallest_tile) != 0))
             return ret;
         qtree->tile_count += 4;
         smallest_tile = find_smallest_tile(smallest_tile, xpos, ypos);
