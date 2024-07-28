@@ -95,11 +95,6 @@ int merge_children(struct Tile *parent_tile)
         if (parent_tile->child[i]->draw != true)
             return 0;
     }
-    puts("merging tiles");
-    for (int i=0; i<4; i++) {
-        printf("xfrom: %d\n", parent_tile->child[i]->x_from);
-        printf("xto: %d\n", parent_tile->child[i]->x_to);
-    }
 
     parent_tile->draw = true;
     parent_tile->has_children = false;
@@ -115,8 +110,10 @@ long int tmp =0;
 
 int qtree_add(struct QTree *qtree, int xpos, int ypos)
 {
-    struct Tile *smallest_tile = find_smallest_tile(&qtree->root_tile, xpos, ypos);
     int ret, merged;
+    struct Tile *smallest_tile = find_smallest_tile(&qtree->root_tile, xpos, ypos);
+    if (smallest_tile->draw)
+        return 0;
 
     while ((smallest_tile->x_to - smallest_tile->x_from + 1) > qtree->x_tile_size && 
            (smallest_tile->y_to - smallest_tile->y_from + 1) > qtree->y_tile_size) {
@@ -126,8 +123,6 @@ int qtree_add(struct QTree *qtree, int xpos, int ypos)
         qtree->tile_count += 4;
         smallest_tile = find_smallest_tile(smallest_tile, xpos, ypos);
     }
-        //printf("xfrom: %d\n", smallest_tile->x_from);
-        //printf("xto: %d\n", smallest_tile->x_to);
     smallest_tile->draw = true;
     merged = merge_children(smallest_tile->parent);
     tmp += merged;

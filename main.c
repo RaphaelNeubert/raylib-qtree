@@ -37,11 +37,11 @@ int main(void)
     SetTargetFPS(20);
 
     struct QTree qtree; 
-    //qtree_init(&qtree, 200, 1400, 50, 800, 40, 40);
-    qtree_init(&qtree, 200, 800, 50, 650, 40, 40);
+    qtree_init(&qtree, 200, 1400, 50, 800, 40, 40);
+    //qtree_init(&qtree, 200, 800, 50, 650, 40, 40);
 
-    for (int i=0; i<50; i++) {
-        for (int j=0; j<50; j++) {
+    for (int i=0; i<150; i++) {
+        for (int j=0; j<80; j++) {
         //qtree_add(&qtree, 1200+i, 700-i);
         qtree_add(&qtree, 200+i, 50+j);
         //qtree_add(&qtree, 100+i, 100+j);
