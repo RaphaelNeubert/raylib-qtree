@@ -3,6 +3,7 @@
 #include "quadtree.h"
 
 void render_tile(struct Tile *tile);
+void render_qtree(struct QTree qtree);
 
 
 #endif  // RENDER_H

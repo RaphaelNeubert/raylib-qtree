@@ -16,7 +16,14 @@ void render_tile(struct Tile *tile)
 
         if (tile->has_children) {
             for (int i=0; i<4; i++) {
-                render_tile(tile->child[i]);
+                //int xfrom = 0;
+                //int xto = 300;
+                //int yfrom = 0;
+                //int yto = 800;
+                //struct Tile *c = tile->child[i];
+//if ((c->x_from > xfrom || c->x_to > xfrom) && (c->x_from < xto || c->x_to < xto))
+                //if ((c->x_from > xfrom && c->x_to < xto) && (c->x_from < xto || c->x_to < xto))
+                    render_tile(tile->child[i]);
             }
         } 
     }

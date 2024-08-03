@@ -2,3 +2,4 @@
 main
 libraylib.a
 raylib.h
+raymath.h

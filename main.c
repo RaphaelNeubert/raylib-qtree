@@ -4,6 +4,7 @@
 #include "math.h"
 #include "quadtree.h"
 #include "render.h"
+#include "raymath.h"
 
 #define NUM_COLORS 22
 
@@ -29,13 +30,44 @@ int main(void)
     printf("tile count: %d\n", qtree.tile_count);
     printf("qtree size: %d Byte\n", qtree_get_size(&qtree));
 
+    Camera2D camera;
+    camera.offset = (Vector2){GetScreenWidth()/2.0f, GetScreenHeight()/2.0f};
+    camera.target = (Vector2){0, 0};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+
+    Vector2 prev_mpos = GetMousePosition();
+
+
     while (!WindowShouldClose())
     {
         float time = GetTime();
+
+        Vector2 mpos = GetMousePosition();
+        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+            Vector2 delta =  Vector2Subtract(prev_mpos, mpos);
+            camera.target  = Vector2Add(camera.target, delta);
+        }
+        prev_mpos = mpos;
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            Vector2 world_coords = GetScreenToWorld2D(mpos, camera);
+            qtree_add(&qtree, world_coords.x, world_coords.y);
+            printf("tile count: %d\n", qtree.tile_count);
+            printf("qtree size: %d Byte\n", qtree_get_size(&qtree));
+        }
+        float mouse_wheel_delta = GetMouseWheelMove();
+        float new_zoom = camera.zoom + mouse_wheel_delta*0.1f;
+        camera.zoom = (new_zoom>0)?new_zoom:0;
+
+
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawFPS(0,0);
+
+	BeginMode2D(camera);
         render_qtree(qtree);
+	EndMode2D();
         EndDrawing();
         //break;
     }

@@ -109,6 +109,11 @@ int merge_children(struct Tile *parent_tile)
 int qtree_add(struct QTree *qtree, int xpos, int ypos)
 {
     int ret, merged;
+    // Nothing to be done if pos is outside of root_tile
+    if (xpos < qtree->root_tile.x_from || xpos > qtree->root_tile.x_to ||
+        ypos < qtree->root_tile.y_from || ypos > qtree->root_tile.y_to)
+        return 0;
+
     struct Tile *smallest_tile = find_smallest_tile(&qtree->root_tile, xpos, ypos);
     if (smallest_tile->draw)
         return 0;
