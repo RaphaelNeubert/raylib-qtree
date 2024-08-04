@@ -14,25 +14,23 @@ int main(void)
     int windowX = 1600;
     int windowY= 900;
     InitWindow(windowX, windowY, "windowname");
-    SetTargetFPS(20);
+    SetTargetFPS(1000);
 
     struct QTree qtree; 
     //qtree_init(&qtree, 200, 1400, 50, 800, 40);
-    qtree_init(&qtree, 0, 5000, 0, 5000, 40);
+    qtree_init(&qtree, -20000000, 20000000, -20000000, 20000000, 40);
 
-    for (int i=0; i<1; i++) {
-        for (int j=0; j<1; j++) {
-        //qtree_add(&qtree, 1200+i, 700-i);
-        qtree_add(&qtree, 200+i, 50+j);
-        //qtree_add(&qtree, 100+i, 100+j);
-        }
+    for (int i=0; i<15000000; i++) {
+        qtree_add(&qtree, 200+i, 50+i);
+        //qtree_add(&qtree, 200, 50+i);
     }
     printf("tile count: %d\n", qtree.tile_count);
     printf("qtree size: %d Byte\n", qtree_get_size(&qtree));
 
     Camera2D camera;
-    camera.offset = (Vector2){GetScreenWidth()/2.0f, GetScreenHeight()/2.0f};
-    camera.target = (Vector2){0, 0};
+    //camera.offset = (Vector2){GetScreenWidth()/2.0f, GetScreenHeight()/2.0f};
+    camera.offset = (Vector2){0,0};
+    camera.target = (Vector2){0,0};
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
@@ -43,17 +41,19 @@ int main(void)
     {
         float time = GetTime();
 
+        // Handle inputs
         Vector2 mpos = GetMousePosition();
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
             Vector2 delta =  Vector2Subtract(prev_mpos, mpos);
-            camera.target  = Vector2Add(camera.target, delta);
+            camera.target  = GetScreenToWorld2D(Vector2Add(camera.offset, delta), camera);
         }
         prev_mpos = mpos;
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             Vector2 world_coords = GetScreenToWorld2D(mpos, camera);
             qtree_add(&qtree, world_coords.x, world_coords.y);
             printf("tile count: %d\n", qtree.tile_count);
-            printf("qtree size: %d Byte\n", qtree_get_size(&qtree));
+            int qtree_size = qtree_get_size(&qtree);
+            printf("qtree size: %d Byte, %d MByte\n",qtree_size, (int)qtree_size/1000000);
         }
         float mouse_wheel_delta = GetMouseWheelMove();
         float new_zoom = camera.zoom + mouse_wheel_delta*0.1f;
@@ -66,8 +66,10 @@ int main(void)
         DrawFPS(0,0);
 
 	BeginMode2D(camera);
-        render_qtree(qtree);
+        int tiles_drawn = render_qtree(qtree, camera);
 	EndMode2D();
+
+        render_num_top_right(tiles_drawn, "tiles drawn:");
         EndDrawing();
         //break;
     }
